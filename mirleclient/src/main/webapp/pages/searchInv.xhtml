@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/WEB-INF/templates/baseTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="searchForm">
+			<p:growl id="msgs" />
+			<p:panel id="searchPanel" header="發票查詢">
+				<p:messages id="messages" />
+				<p:toolbar>
+					<f:facet name="left">
+						<h:outputLabel for="beginDate" value="起始時間: "
+							style="margin-left:10px; margin-right: 5px; " />
+						<p:calendar id="beginDate"
+							value="#{searchInvoiceController.beginDate}"
+							showButtonPanel="true" />
+						<h:outputLabel for="endDate" value="截止時間: "
+							style="margin-left:10px; margin-right: 5px; " />
+						<p:calendar id="endDate"
+							value="#{searchInvoiceController.endDate}" showButtonPanel="true" />
+						<p:commandButton value="查詢" update="searchForm"
+							actionListener="#{searchInvoiceController.submit}"
+							icon="ui-icon ui-icon-search"
+							style="margin-left: 5px; margin-right: 5px;" />
+
+						<p:commandButton value="更新時間" type="button" 
+							icon="ui-icon-clock" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:outputPanel id="searchOutputPanel" style="margin-top:0px;"
+					rendered="#{searchInvoiceController.enableOutput}">
+					<p:dataTable var="invNo"
+						value="#{searchInvoiceController.invNoList}" scrollable="true"
+						selection="#{searchInvoiceController.selectedInvNoList}"
+						rowKey="#{invNo.id}" scrollHeight="700" paginator="true" rows="20"
+						paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						<p:column selectionMode="multiple"
+							style="width:10px;text-align:center" />
+						<p:column headerText="發票號碼"
+							style="width:60px; text-align: center;">
+							<h:outputText value="#{invNo.id.invNo}" />
+						</p:column>
+						<p:column headerText="發票日期" style="width:60px;text-align: center;">
+							<h:outputText value="#{invNo.invDd}">
+								<f:convertDateTime pattern="yyyy/MM/dd" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="單據號碼" style="width:80px;text-align:center;">
+							<p:commandLink
+								action="#{searchInvoiceController.setSelectedInvNo(invNo)}"
+								onclick="PF('sales').show();" update=":searchForm:mainPanel">
+								<h:outputText value="#{invNo.id.bilNo}" />
+							</p:commandLink>
+						</p:column>
+						<p:column headerText="買方統一編號"
+							style="width:90px;text-align: center;">
+							<h:outputText value="#{invNo.uniNoBuy}" />
+						</p:column>
+						<p:column headerText="買方名稱" style="width: 120px; text-align:left;">
+							<h:outputText value="#{invNo.titleBuy}" />
+						</p:column>
+						<p:column headerText="備註" style="width: 150px;text-align:left;">
+							<h:outputText value="#{invNo.rem}" />
+						</p:column>
+						<p:column headerText="總金額" style="width:100px;text-align: right;">
+							<h:outputText value="#{invNo.amt}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+			</p:panel>
+
+			<p:dialog id="salesDialog" header="銷貨單" widgetVar="sales"
+				showEffect="fade" hideEffect="fade" height="400" width="840">
+				<p:panel id="mainPanel"
+					header="#{searchInvoiceController.selectedInvNo.id.bilNo}">
+					<h:panelGrid columns="2" cellpadding="3">
+						<h:outputLabel value="銷貨日期:" />
+						<h:outputText
+							value="#{searchInvoiceController.selectedMfPss.psDd}">
+							<f:convertDateTime pattern="yyyy/MM/dd" />
+						</h:outputText>
+						<h:outputLabel value="銷貨客戶:" />
+						<h:outputText
+							value="#{searchInvoiceController.selectedInvNo.cust.name}" />
+						<h:outputLabel value="客戶訂單:" />
+						<h:outputText
+							value="#{searchInvoiceController.selectedMfPss.cusOsNo}" />
+					</h:panelGrid>
+
+					<p:dataTable var="tfPss"
+						value="#{searchInvoiceController.selectedMfPss.tfPsses}"
+						scrollable="true">
+						<p:column headerText="品號" style="width: 60px;">
+							<h:outputText value="#{tfPss.prdt.prdNo}" />
+						</p:column>
+						<p:column headerText="品名" style="width: 130px; text-align: left;">
+							<h:outputText value="#{tfPss.prdName}" />
+						</p:column>
+						<p:column headerText="數量" style="width: 50px; text-align: center;">
+							<h:outputText value="#{tfPss.qty}">
+								 <f:convertNumber maxFractionDigits="3"/>
+							</h:outputText>
+						</p:column>
+						<p:column headerText="單價" style="width: 60px;text-align: right;">
+							<h:outputText value="#{tfPss.up}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</p:column>	
+						<p:column headerText="未稅金額" style="text-align: right;">
+							<h:outputText value="#{tfPss.amtnNet}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</p:column>											
+						<p:column headerText="稅金" style="text-align: right;">
+							<h:outputText value="#{tfPss.tax}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="總金額" style="text-align: right;">
+							<h:outputText value="#{tfPss.tax + tfPss.amtnNet}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>						
+						</p:column>																
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

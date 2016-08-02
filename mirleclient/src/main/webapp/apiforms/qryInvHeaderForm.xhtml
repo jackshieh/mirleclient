@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/WEB-INF/templates/baseTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="qryInvHeaderViewForm">
+			<p:panel header="查詢發票表頭">
+				<p:growl id="msgs" />
+				<p:panel>
+					<p:outputLabel value="發票號碼: " />
+					<p:inputText id="invnum" value="#{invHeaderView.request.invNum}">
+						<f:validateRegex pattern="[A-Z]{2}\d{8}" />
+					</p:inputText>
+					<p:commandButton id="qryInvHeader"
+						actionListener="#{invHeaderView.search}" value="查詢" ajax="true" update="qryInvHeaderViewForm" icon="ui-icon ui-icon-search" 
+						style="margin-left: 5px;" />
+				</p:panel>				
+				<p:panelGrid id="responsePanel" columns="2" style="margin-top:10px; text-align: center;" rendered="#{invHeaderView.enableOutput}">
+					<p:outputLabel value="發票號碼" /><p:outputLabel value="#{invHeaderView.response.invNum}" />
+					<p:outputLabel value="發票日期" /><p:outputLabel value="#{invHeaderView.response.invDate}" />
+					<p:outputLabel value="賣方名稱" /><p:outputLabel value="#{invHeaderView.response.sellerName}" />
+				    <p:outputLabel value="發票票期" /><p:outputLabel value="#{invHeaderView.response.invPeriod}" />
+				    <p:outputLabel value="發票狀態" /><p:outputLabel value="#{invHeaderView.response.invStatus}" />			
+				</p:panelGrid>				
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

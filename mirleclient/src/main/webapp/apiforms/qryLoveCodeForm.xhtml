@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/WEB-INF/templates/baseTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="qryLoveCodeForm">
+			<p:panel header="愛心碼查詢">
+				<p:growl id="msgs" />
+				<p:panel>
+					<p:outputLabel value="愛心碼關鍵字: " />
+					<p:inputText id="lovecode" value="#{loveCodeView.request.qKey}">
+						<f:validateRegex pattern="\d+" />
+					</p:inputText>
+					<p:commandButton id="qryLoveCode"
+						actionListener="#{loveCodeView.search}" value="查詢" ajax="true" update="qryLoveCodeForm" icon="ui-icon ui-icon-search" 
+						style="margin-left: 5px;" />
+				</p:panel>
+				<p:panel id="responsePanel" rendered="#{loveCodeView.enableOutput}">
+					<p:dataTable var="socialWelfare"
+						value="#{loveCodeView.response.socialWelfareList}"
+						style="margin-top:10px; text-align:center;" paginator="true"
+						rows="20" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						<p:column headerText="編號" style="width: 80px;">
+							<h:outputText value="#{socialWelfare.rowNum}" />
+						</p:column>
+						<p:column headerText="社福團體統編" style="width: 120px;">
+							<h:outputText value="#{socialWelfare.BAN}" />
+						</p:column>
+						<p:column headerText="社福團體愛心碼" style="width: 140px;">
+							<h:outputText value="#{socialWelfare.loveCode}" />
+						</p:column>
+						<p:column headerText="社福團體名稱" style="text-align:left;">
+							<h:outputText value="#{socialWelfare.name}" />
+						</p:column>
+						<p:column headerText="社福團體簡稱">
+							<h:outputText value="#{socialWelfare.shortName}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/WEB-INF/templates/baseTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="c3Form">
+			<p:growl id="msgs" />
+			<p:panel header="上傳下一期發票字軌資料 ">
+				<p:panel>
+					<p:panelGrid id="requestHeaderPanel" style="margin-top:10px;">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="發票字軌: " />
+							</p:column>
+							<p:column colspan="3">
+								<p:inputText id="invHeader"
+									value="#{nextTermInvHeaderView.request.invHeader}">
+									<f:validateRegex pattern="[A-Z]{2}" />
+								</p:inputText>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:outputLabel value="發票期別: " />
+							</p:column>
+							<p:column colspan="3">
+								<p:inputText id="taxMonth"
+									value="#{nextTermInvHeaderView.request.taxMonth}"></p:inputText>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:outputLabel value="發票起號: " />
+							</p:column>
+							<p:column>
+								<p:inputText id="invStartNumber"
+									value="#{nextTermInvHeaderView.request.invStartNumber}"></p:inputText>
+							</p:column>
+							<p:column>
+								<p:outputLabel value="發票迄號: " />
+							</p:column>
+							<p:column>
+								<p:inputText id="invEndNumber"
+									value="#{nextTermInvHeaderView.request.invEndNumber}"></p:inputText>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+					<p:commandButton id="c3upload"
+						actionListener="#{nextTermInvHeaderView.upload}" value="上傳"
+						ajax="true" update="c3Form" icon="ui-icon ui-icon-search"
+						style="margin-top: 10px" />
+
+				</p:panel>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/WEB-INF/templates/baseTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="qryWinningListForm">
+			<p:panel header="查詢中獎發票號碼清單">
+				<p:growl id="msgs" />
+				<p:inputText id="version" value="#{winningListView.request.version}"
+					type="hidden" />
+				<p:inputText id="UUID" value="#{winningListView.request.UUID}"
+					type="hidden" />
+				<p:inputText id="appID" value="#{winningListView.request.appID}"
+					type="hidden" />
+				<p:panel>
+					<p:outputLabel value="發票年月: " />
+					<p:inputText id="yyymm" value="#{winningListView.request.invTerm}">
+						<f:validateRegex pattern="^1[01][0-9]{2}[02468]" />
+					</p:inputText>
+					<p:watermark for="yyymm" value="開獎期別(雙數月)" id="watermark" />
+					<p:commandButton id="qryWinningList"
+						actionListener="#{winningListView.search}" value="查詢" ajax="true" update="qryWinningListForm msgs" icon="ui-icon ui-icon-search"
+						style="margin-left: 5px;" />
+				</p:panel>				
+				<p:panelGrid id="responsePanel" style="margin-top:10px; text-align: center;" rendered="#{winningListView.enableOutput}">
+					<f:facet name="header">
+						<p:row>
+							<p:column>獎別</p:column>
+							<p:column>中獎號碼</p:column>
+						</p:row>
+					</f:facet>
+					<p:row>
+						<p:column styleClass="winningOutputLabel">特別獎</p:column>
+						<p:column>
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.superPrizeNo}" />
+							<div style="font-size: 80%; text-align: left;">同期統一發票收執聯8位數號碼與上列號碼相同者獎金1,000
+								萬元</div>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column styleClass="winningOutputLabel">特獎</p:column>
+						<p:column>
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.spcPrizeNo}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.spcPrizeNo2}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.spcPrizeNo3}" />
+							<div style="font-size: 80%; text-align: left;">同期統一發票收執聯8位數號碼與上列號碼相同者獎金200
+								萬元</div>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column styleClass="winningOutputLabel">頭獎</p:column>
+						<p:column>
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo1}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo2}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo3}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo4}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo5}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo6}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo7}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo8}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo9}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.firstPrizeNo10}" />
+							<div style="font-size: 80%; text-align: left;">同期統一發票收執聯8位數號碼與上列號碼相同者獎金20
+								萬元</div>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column styleClass="winningOutputLabel">二獎</p:column>
+						<p:column>
+							<div style="font-size: 80%; text-align: left;">同期統一發票收執聯末7
+								位數號碼與頭獎中獎號碼末7 位相同者各得獎金4 萬元</div>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column styleClass="winningOutputLabel">三獎</p:column>
+						<p:column>
+							<div style="font-size: 80%; text-align: left;">同期統一發票收執聯末6
+								位數號碼與頭獎中獎號碼末6 位相同者各得獎金1 萬元</div>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column styleClass="winningOutputLabel">四獎</p:column>
+						<p:column style="font-size: 80%; text-align: left;">同期統一發票收執聯末5 位數號碼與頭獎中獎號碼末5 位相同者各得獎金4 千元</p:column>
+					</p:row>
+					<p:row>
+						<p:column styleClass="winningOutputLabel">五獎</p:column>
+						<p:column style="font-size: 80%; text-align: left;">同期統一發票收執聯末4 位數號碼與頭獎中獎號碼末4 位相同者各得獎金1 千元</p:column>
+					</p:row>
+					<p:row>
+						<p:column styleClass="winningOutputLabel">六獎</p:column>
+						<p:column style="font-size: 80%; text-align: left;">同期統一發票收執聯末3 位數號碼與頭獎中獎號碼末3 位相同者各得獎金2 百元</p:column>
+					</p:row>
+					<p:row>
+						<p:column styleClass="winningOutputLabel">增開六獎</p:column>
+						<p:column>
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.sixthPrizeNo1}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.sixthPrizeNo2}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.sixthPrizeNo3}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.sixthPrizeNo4}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.sixthPrizeNo5}" />&nbsp;
+							<p:outputLabel styleClass="redWinningNumber" value="#{winningListView.response.sixthPrizeNo6}" />							
+							<div style="font-size: 80%; text-align: left;">同期統一發票收執聯末3
+								位數號碼與上列號碼相同者各得獎金2 百元</div>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+				
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/WEB-INF/templates/baseTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="searchDiscountedSalesForm">
+			<p:growl id="msgs" showDetail="true" showSummary="true" />
+			<p:panel id="searchPanel" header="折讓單查詢">
+				<!-- p:messages id="messages" /-->
+				<p:toolbar>
+					<f:facet name="left">
+						<h:outputLabel for="beginDate" value="起始時間: "
+							style="margin-left:10px; margin-right: 5px; " />
+						<p:calendar id="beginDate"
+							value="#{searchDiscountedSalesView.beginDate}"
+							showButtonPanel="true" />
+						<h:outputLabel for="endDate" value="截止時間: "
+							style="margin-left:10px; margin-right: 5px; " />
+						<p:calendar id="endDate"
+							value="#{searchDiscountedSalesView.endDate}" showButtonPanel="true" />
+						<p:commandButton value="查詢" update="searchDiscountedSalesForm"
+							actionListener="#{searchDiscountedSalesView.search}"
+							icon="ui-icon ui-icon-search"
+							style="margin-left: 5px; margin-right: 5px;" />												
+						<p:commandButton value="上傳折讓單" update="searchDiscountedSalesForm:msgs" actionListener="#{searchDiscountedSalesView.uploadD0401}" icon="ui-icon ui-icon-disk" />
+						<p:commandButton value="上傳作廢折讓單" update="searchDiscountedSalesForm:msgs" actionListener="#{searchDiscountedSalesView.uploadD0501}" icon="ui-icon-trash" />
+					</f:facet>
+				</p:toolbar>				
+				<p:outputPanel id="searchOutputPanel" style="margin-top:0px;"
+					rendered="#{searchDiscountedSalesView.enableOutput}">
+					<p:dataTable var="mfpss"
+						value="#{searchDiscountedSalesView.salesList}" scrollable="true"
+						selection="#{searchDiscountedSalesView.selectedSalesList}"
+						rowKey="#{mfpss.id}" scrollHeight="700" paginator="true" rows="20"
+						paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						<p:column selectionMode="multiple" style="width:10px;text-align:center" />
+						<p:column headerText="單據號碼" style="width:80px;text-align:center;">
+							<p:commandLink
+								action="#{searchDiscountedSalesView.setSelectedSales(mfpss)}"
+								onclick="PF('sales').show();" update=":searchDiscountedSalesForm:mainPanel">
+								<h:outputText value="#{mfpss.id.psNo}" />
+							</p:commandLink>
+						</p:column>													
+						<p:column headerText="單據日期" style="width:60px;text-align: center;">
+							<h:outputText value="#{mfpss.psDd}">
+								<f:convertDateTime pattern="yyyy/MM/dd" />
+							</h:outputText>
+						</p:column>			
+						<p:column headerText="發票號碼"
+							style="width:90px;text-align: center;">
+							<h:outputText value="#{mfpss.invNo.id.invNo}" />
+						</p:column>
+						<p:column headerText="買方名稱" style="width: 120px; text-align:left;">
+							<h:outputText value="#{mfpss.cust.name}" />
+						</p:column>
+						<p:column headerText="發票退回金額" style="width:100px;text-align: right;">
+							<h:outputText value="#{mfpss.amtInv}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="發票退回稅額" style="width:100px;text-align: right;">
+							<h:outputText value="#{mfpss.taxInv}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="總金額" style="width:100px;text-align: right;">
+							<h:outputText value="#{mfpss.amtInv + mfpss.taxInv}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="發票上傳狀態" style="width: 150px;text-align:left;">
+							<h:outputText value="#{mfpss.invNo.rem}" />
+						</p:column>																		
+					</p:dataTable>
+				</p:outputPanel>
+			</p:panel>
+			<p:dialog id="salesDialog" header="銷貨單" widgetVar="sales"
+				showEffect="fade" hideEffect="fade" height="400" width="840">
+				<p:panel id="mainPanel"
+					header="#{searchDiscountedSalesView.selectedSales.id.psNo}">
+					<h:panelGrid columns="2" cellpadding="3">
+						<h:outputLabel value="銷貨日期:" />
+						<h:outputText
+							value="#{searchDiscountedSalesView.selectedSales.psDd}">
+							<f:convertDateTime pattern="yyyy/MM/dd" />
+						</h:outputText>
+						<h:outputLabel value="銷貨客戶:" />
+						<h:outputText
+							value="#{searchDiscountedSalesView.selectedSales.cust.name}" />
+						<h:outputLabel value="客戶訂單:" />
+						<h:outputText
+							value="#{searchDiscountedSalesView.selectedSales.cusOsNo}" />
+					</h:panelGrid>
+
+					<p:dataTable var="tfPss"
+						value="#{searchDiscountedSalesView.selectedSales.tfPsses}"
+						scrollable="true">
+						<p:column headerText="品號" style="width: 60px;">
+							<h:outputText value="#{tfPss.prdt.prdNo}" />
+						</p:column>
+						<p:column headerText="品名" style="width: 120px; text-align: left;">
+							<h:outputText value="#{tfPss.prdName}" />
+						</p:column>
+						<p:column headerText="未稅金額" style="text-align: right;">
+							<h:outputText value="#{tfPss.amtnNet}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</p:column>											
+						<p:column headerText="稅金" style="text-align: right;">
+							<h:outputText value="#{tfPss.tax}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="總金額" style="text-align: right;">
+							<h:outputText value="#{tfPss.tax + tfPss.amtnNet}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>						
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

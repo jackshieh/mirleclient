@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/WEB-INF/templates/baseTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="qryInvDetailViewForm">
+			<p:panel header="查詢發票明細">
+				<p:growl id="msgs" />
+				<p:panel>
+					<p:outputLabel value="發票號碼: " />
+					<p:inputText id="invnum" value="#{invDetailView.request.invNum}">
+						<f:validateRegex pattern="[A-Z]{2}\d{8}" />
+					</p:inputText>
+					<p:commandButton id="qryInvDetail"
+						actionListener="#{invDetailView.search}" value="查詢" ajax="true" update="qryInvDetailViewForm" icon="ui-icon ui-icon-search" 
+						style="margin-left: 5px;" />
+				</p:panel>
+				<p:panel id="responsePanel" rendered="#{invDetailView.enableOutput}">
+					<p:panelGrid id="responseHeaderPanel" columns="2" style="margin-top:10px;">
+						<p:outputLabel value="發票號碼" />
+						<p:outputLabel value="#{invDetailView.response.invNum}" />
+						<p:outputLabel value="發票日期" />
+						<p:outputLabel value="#{invDetailView.response.invDateStr}" />
+						<p:outputLabel value="賣方名稱" />
+						<p:outputLabel value="#{invDetailView.response.sellerName}" />
+						<p:outputLabel value="發票票期" />
+						<p:outputLabel value="#{invDetailView.response.invPeriod}" />
+						<p:outputLabel value="發票狀態" />
+						<p:outputLabel value="#{invDetailView.response.invStatus}" />
+					</p:panelGrid>
+					<p:dataTable var="item" value="#{invDetailView.response.details}" style="margin-top:10px; text-align:center;">
+						<p:column headerText="編號">
+							<h:outputText value="#{item.rowNum}" />
+						</p:column>
+						<p:column headerText="品名">
+							<h:outputText value="#{item.description}" />
+						</p:column>
+						<p:column headerText="數量">
+							<h:outputText value="#{item.quantity}" />
+						</p:column>
+						<p:column headerText="單價">
+							<h:outputText value="#{item.unitPrice}" />
+						</p:column>
+						<p:column headerText="小計">
+							<h:outputText value="#{item.amount}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>
